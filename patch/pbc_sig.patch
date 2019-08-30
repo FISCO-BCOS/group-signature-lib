@@ -1,0 +1,10 @@
+--- sig/bbs.c	2010-10-20 08:55:34.000000000 +0800
++++ sig/bbs2.c	2019-08-23 11:38:35.000000000 +0800
+@@ -1,6 +1,6 @@
+ //see Boneh, Boyen and Shacham, "Short Group Signatures"
+-#include <pbc/pbc_utils.h>
+ #include "pbc_sig.h"
++#include <pbc/pbc_utils.h>
+ #include "pbc_hash.h"
+ 
+ void bbs_gen_sys_param(bbs_sys_param_ptr param, pairing_ptr pairing)
