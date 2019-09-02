@@ -97,6 +97,10 @@ extern "C"
                    std::string const &message,
                    std::string const &param_info);
 
+   bool ringsig_verify(std::string const &sig,
+                       std::string const &message,
+                       std::string const &param_info);
+
 #if defined(__cplusplus)
    }
    }

@@ -20,6 +20,7 @@
  * @date: 2018.02.11
  */
 #pragma once
+#include <sys/stat.h>
 #include <string>
 #include <unistd.h>
 #include <exception>
@@ -27,10 +28,10 @@
 #include <iomanip>
 #include <sys/time.h>
 #include <sstream>
-#include <boost/filesystem.hpp>
+#include <fstream>
 #include <pbc/pbc.h>
-
 #include "easylog.h"
+
 #define MAX_PATH_LEN 255
 
 using namespace std;
@@ -277,11 +278,10 @@ static inline bool create_directory(string &path)
         string cur_dir(abs_path);
         path = cur_dir + "/" + path;
     }
-
     //创建文件夹
     try
     {
-        boost::filesystem::create_directories(path);
+        mkdir(path.c_str(), S_IRWXU);
         LOG(DEBUG) << "CREATE DIR=" << path << " SUCCEED";
         return true;
     }

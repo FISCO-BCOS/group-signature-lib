@@ -23,20 +23,15 @@ list(APPEND HEADERS ${ALGORITHM_HEADERS})
 list(APPEND SRC_LIST ${DEVCORE_SRC})
 list(APPEND HEADERS ${DEVCORE_HEADERS})
 
-find_library(boost REQUIRED)
 find_package(GMP REQUIRED)
-
-include_directories(goup_sig PUBLIC ${BOOST_INCLUDE_DIR})
-include_directories(goup_sig PUBLIC ${PBC_INCLUDE_DIR})
-include_directories(goup_sig PUBLIC ${CRYPTOPP_INCLUDE_DIR})
-include_directories(goup_sig PUBLIC ${PBC_SIG_INCLUDE_DIR})
-include_directories(goup_sig PUBLIC ${GMP_INCLUDE_DIR})
 
 add_library(group_sig STATIC ${SRC_LIST} ${HEADERS})
 
-target_link_libraries(group_sig PUBLIC Pbc_sig Pbc Gmp Cryptopp Boost::Filesystem Boost::System) 
+target_link_libraries(group_sig PUBLIC Pbc_sig Pbc Gmp Cryptopp JsonCpp)
+add_dependencies(group_sig Pbc_sig Pbc Gmp Cryptopp JsonCpp) 
 
-install(TARGETS group_sig RUNTIME DESTINATION bin/ ARCHIVE DESTINATION lib/ LIBRARY DESTINATION lib/)
+INSTALL(TARGETS group_sig RUNTIME DESTINATION bin/ ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
+
 INSTALL(FILES ${ALGORITHM_BBS04_HEADERS} DESTINATION include/group_sig/algorithm/bbs04/) 
 INSTALL(FILES ${ALGORITHM_RING_SIG_HEADERS} DESTINATION include/group_sig/algorithm/ring-sig/) 
 INSTALL(FILES ${ALGORITHM_HEADERS} DESTINATION include/group_sig/algorithm/) 

@@ -26,8 +26,12 @@
 #include "group_sig/devcore/easylog.h"
 #include "group_sig/devcore/CommonFunc.h"
 #include "GroupSig.h"
+#include "group_sig/devcore/StatusCode.h"
+#include "group_sig/devcore/Base64.h"
 
+using namespace dev;
 using namespace dev::eth;
+using namespace RetCode::CommonStatusCode;
 
 #if defined(__cplusplus)
 namespace GroupSigApi
@@ -126,6 +130,30 @@ int group_verify(int &valid,
         LOG(TRACE) << "group verify time:" << cost << " s";
         LOG(DEBUG) << "RESULT:" << valid;
         return ret;
+}
+
+bool groupsig_verify(const std::string &sig,
+                     const std::string &message,
+                     const std::string &gpk_info,
+                     const std::string &pbc_param_info)
+{
+        std::string j_sig = FromBase64(sig);
+        std::string j_gpk_info = FromBase64(gpk_info);
+        std::string j_pbc_param_info = FromBase64(pbc_param_info);
+        std::string param = j_sig + _get_split_symbol();
+        param += message + _get_split_symbol();
+        param += j_gpk_info + _get_split_symbol();
+        param += j_pbc_param_info;
+        LOG(DEBUG) << "PARAM:" << param;
+        int valid;
+        if (GroupSigFactory::instance(BBS04)->group_verify(valid, param))
+        {
+                throw std::string("invalid inputs");
+        }
+        if (valid)
+                return true;
+        else
+                return false;
 }
 
 //implementation of group open with given signature

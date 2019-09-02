@@ -25,6 +25,7 @@
 #include "ring-sig/Common.h"
 #include "ring-sig/LinkableRingSig_Impl.h"
 #include "RingSig.h"
+#include "group_sig/devcore/Base64.h"
 
 #if !defined(__cplusplus)
 extern "C"
@@ -73,6 +74,18 @@ extern "C"
                 LOG(DEBUG) << "ring sig verify...";
                 return dev::eth::LinkableRingSigImpl::linkable_ring_verify(valid,
                                                                            sig, message, param_info);
+        }
+        bool ringsig_verify(std::string const &sig,
+                            std::string const &message,
+                            std::string const &param_info)
+        {
+                LOG(DEBUG) << "ringsig verify...";
+                bool valid;
+                if (dev::eth::LinkableRingSigImpl::linkable_ring_verify(valid, dev::FromBase64(sig), message, dev::FromBase64(param_info)))
+                {
+                        throw std::string("invalid inputs");
+                }
+                return valid;
         }
 #if defined(__cplusplus)
         }

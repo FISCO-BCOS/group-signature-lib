@@ -153,6 +153,11 @@ extern "C"
                    const std::string &gpk_info,
                    const std::string &pbc_param_info);
 
+  bool groupsig_verify(const std::string &sig,
+                       const std::string &message,
+                       const std::string &gpk_info,
+                       const std::string &pbc_param_info);
+
   //implementation of group open with given signature
   /* @function: get cert according to given signature
                  (only group manager can calculate the cert)

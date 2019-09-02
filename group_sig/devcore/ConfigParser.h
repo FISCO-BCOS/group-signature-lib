@@ -1,5 +1,5 @@
-/*
-	This file is part of FISCO BCOS.
+/*  
+    This file is part of FISCO BCOS.
 
 	FISCO BCOS is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 /*
  * @file: ConfigParser.h
  * @author: fisco-dev
- * @date: 2018.2.5
+ * @date: 2019.9.1
  * @function: config parser
  */
 
@@ -26,13 +26,11 @@
 #include <exception>
 #include <map>
 #include <string>
-
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/ptree.hpp>
-
+#include <typeinfo>
+#include <fstream>
+#include <json/json.h>
 #include "easylog.h"
 
-using namespace boost::property_tree;
 using namespace std;
 
 namespace dev
@@ -117,77 +115,27 @@ private:
     JsonConfigParser &operator=(const JsonConfigParser &);
 
 public:
-    //init ptree according to json string or json file
-    /*JsonConfigParser(JsonConfigType type = JsonFile) { input_type = type; }
-    int init_json_string(string const &json_str)
-    {
-        int error = 0;
-        if (input_type == JsonString)
-        {
-            try
-            {
-                //LOG(DEBUG) << "parse json string "<< JsonString;
-                stringstream json_stream;
-                json_stream << json_str;
-                read_json<ptree>(json_stream, json_pt);
-            }
-            catch (exception &error_msg)
-            {
-                LOG(ERROR) << "LOAD JSON STR:" << json_str << " FAILED, error_msg:"
-                           << error_msg.what();
-                error = 1;
-            }
-        }
-        //default is JsonFile
-        else
-        {
-            try
-            {
-                config_file = json_str;
-                read_json<ptree>(json_str, json_pt);
-            }
-            catch (exception &error_msg)
-            {
-                LOG(ERROR) << "LOAD JSON FROM FILE " << json_str << " FAILED, error_msg:"
-                           << error_msg.what();
-                error = 1;
-            }
-        }
-        return error;
-    }*/
+    //init Json::value according to json string or json file
     int error;
     JsonConfigParser(string const &json_str,
                      JsonConfigType type = JsonFile) : input_type(type)
     {
         error = 0;
+        Json::Reader reader;
         if (JsonString == type)
         {
-            try
+            if (!reader.parse(json_str.c_str(), json_pt))
             {
-                //LOG(DEBUG) << "parse json string "<< JsonString;
-                stringstream json_stream;
-                json_stream << json_str;
-                read_json<ptree>(json_stream, json_pt);
-            }
-            catch (exception &error_msg)
-            {
-                LOG(ERROR) << "LOAD JSON STR:" << json_str << " FAILED, error_msg:"
-                           << error_msg.what();
                 error = 1;
             }
         }
         //default is JsonFile
         else
         {
-            try
+            config_file = json_str;
+            std::ifstream ifs(json_str);
+            if (!reader.parse(ifs, json_pt))
             {
-                config_file = json_str;
-                read_json<ptree>(json_str, json_pt);
-            }
-            catch (exception &error_msg)
-            {
-                LOG(ERROR) << "LOAD JSON FROM FILE " << json_str << " FAILED, error_msg:"
-                           << error_msg.what();
                 error = 1;
             }
         }
@@ -201,26 +149,126 @@ public:
              *      case 2. value of key is obtained from default_value: false;
              */
     template <typename T>
-    bool get_value(const string &key, T &value, ptree &pt)
+    bool get_value(const string &key, T &value, Json::Value &pt)
     {
+        bool ret = false;
         try
         {
-            //value = json_pt.get<T>(key);
-            value = pt.get<T>(key);
+            ret = pt.isMember(key);
+        }
+        catch (exception &error_msg)
+        {
+            LOG(ERROR) << "find key error" << error_msg.what();
+            error = 1;
+            return false;
+        }
+        if (ret)
+        {
+            try
+            {
+                if (typeid(value) == typeid(bool))
+                    value = pt[key].asBool();
+                else if (typeid(value) == typeid(int64_t))
+                    value = pt[key].asInt64();
+                else if (typeid(value) == typeid(uint))
+                    value = pt[key].asUInt();
+                else if (typeid(value) == typeid(uint64_t))
+                    value = pt[key].asUInt64();
+                else if (typeid(value) == typeid(double))
+                    value = pt[key].asDouble();
+                else if (typeid(value) == typeid(float))
+                    value = pt[key].asFloat();
+                else
+                {
+                    error = 1;
+                    return false;
+                }
+            }
+            catch (exception &error_msg)
+            {
+                LOG(ERROR) << "get value error" << error_msg.what();
+                error = 1;
+            }
+
             return true;
         }
-        catch (ptree_error err_msg)
+        else
         {
-            LOG(WARNING) << "key " << key << " doesn't exist, msg:" << err_msg.what();
-            //LOG(WARNING)<<"key="<<key<<" not exists config file, error msg:"<<(err_msg.what());
-            //LOG(ERROR)<<"get "<<key<<" from json_str failed";
             error = 1;
+            return false;
         }
-        return false;
+    }
+
+    template <>
+    bool get_value(const string &key, int &value, Json::Value &pt)
+    {
+        bool ret = false;
+        try
+        {
+            ret = pt.isMember(key);
+        }
+        catch (exception &error_msg)
+        {
+            LOG(ERROR) << "find key error" << error_msg.what();
+            error = 1;
+            return false;
+        }
+        if (ret)
+        {
+            try
+            {
+                value = pt[key].asInt();
+            }
+            catch (exception &error_msg)
+            {
+                LOG(ERROR) << "get value error" << error_msg.what();
+                error = 1;
+            }
+            return true;
+        }
+        else
+        {
+            error = 1;
+            return false;
+        }
+    }
+
+    template <>
+    bool get_value(const string &key, string &value, Json::Value &pt)
+    {
+        bool ret = false;
+        try
+        {
+            ret = pt.isMember(key);
+        }
+        catch (exception &error_msg)
+        {
+            LOG(ERROR) << "find key error" << error_msg.what();
+            error = 1;
+            return false;
+        }
+        if (ret)
+        {
+            try
+            {
+                value = pt[key].asString();
+            }
+            catch (exception &error_msg)
+            {
+                LOG(ERROR) << "get value error" << error_msg.what();
+                error = 1;
+            }
+            return true;
+        }
+        else
+        {
+            error = 1;
+            return false;
+        }
     }
 
     template <typename T>
-    bool get_value(const string &key, T &value, const T &default_value, ptree &pt)
+    bool get_value(const string &key, T &value, const T &default_value, Json::Value &pt)
     {
         value = default_value;
         return get_value(key, value, pt);
@@ -253,25 +301,24 @@ public:
     template <typename T>
     void set_value(const string &key, const T &value)
     {
-        json_pt.put(key, value);
+        json_pt[key] = value;
     }
 
     template <typename T>
     static void convert_to_json_str(std::string &json_str,
                                     std::map<string, T> value_map)
     {
-        ptree root_json;
+        Json::Value root_json;
         for (auto item : value_map)
-            root_json.put(item.first, item.second);
-        std::stringstream json_stream;
-        write_json(json_stream, root_json);
-        json_str = json_stream.str();
+            root_json[item.first] = item.second;
+        Json::StyledWriter writer;
+        json_str = writer.write(root_json);
     }
 
 protected:
-    ptree json_pt;
+    Json::Value json_pt;
     JsonConfigType input_type;
     string config_file = "";
-};
+}; // namespace eth
 } // namespace eth
 } // namespace dev
