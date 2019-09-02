@@ -80,10 +80,22 @@ extern "C"
                             std::string const &param_info)
         {
                 LOG(DEBUG) << "ringsig verify...";
+                std::string j_sig, j_param_info;
+                try
+                {
+                        j_sig = dev::FromBase64(sig);
+                        j_param_info = dev::FromBase64(param_info);
+                }
+                catch (std::string &errorMsg)
+                {
+                        throw errorMsg;
+                        return false;
+                }
                 bool valid;
-                if (dev::eth::LinkableRingSigImpl::linkable_ring_verify(valid, dev::FromBase64(sig), message, dev::FromBase64(param_info)))
+                if (dev::eth::LinkableRingSigImpl::linkable_ring_verify(valid, j_sig, message, j_param_info))
                 {
                         throw std::string("invalid inputs");
+                        return false;
                 }
                 return valid;
         }

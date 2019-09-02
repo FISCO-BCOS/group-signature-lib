@@ -137,9 +137,19 @@ bool groupsig_verify(const std::string &sig,
                      const std::string &gpk_info,
                      const std::string &pbc_param_info)
 {
-        std::string j_sig = FromBase64(sig);
-        std::string j_gpk_info = FromBase64(gpk_info);
-        std::string j_pbc_param_info = FromBase64(pbc_param_info);
+        std::string j_sig, j_gpk_info, j_pbc_param_info;
+        try
+        {
+                j_sig = FromBase64(sig);
+                j_gpk_info = FromBase64(gpk_info);
+                j_pbc_param_info = FromBase64(pbc_param_info);
+        }
+        catch (std::string &errorMsg)
+        {
+                throw errorMsg;
+                return false;
+        }
+
         std::string param = j_sig + _get_split_symbol();
         param += message + _get_split_symbol();
         param += j_gpk_info + _get_split_symbol();
@@ -149,6 +159,7 @@ bool groupsig_verify(const std::string &sig,
         if (GroupSigFactory::instance(BBS04)->group_verify(valid, param))
         {
                 throw std::string("invalid inputs");
+                return false;
         }
         if (valid)
                 return true;
