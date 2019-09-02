@@ -208,6 +208,105 @@ public:
         }
     }
 
+    inline bool get_value_inline(const string &key, uint &value, Json::Value &pt)
+    {
+        bool ret = false;
+        try
+        {
+            ret = pt.isMember(key);
+        }
+        catch (exception &error_msg)
+        {
+            LOG(ERROR) << "find key error" << error_msg.what();
+            error = 1;
+            return false;
+        }
+        if (ret)
+        {
+            try
+            {
+                value = pt[key].asUInt();
+            }
+            catch (exception &error_msg)
+            {
+                LOG(ERROR) << "get value error" << error_msg.what();
+                error = 1;
+            }
+            return true;
+        }
+        else
+        {
+            error = 1;
+            return false;
+        }
+    }
+
+    inline bool get_value_inline(const string &key, int64_t &value, Json::Value &pt)
+    {
+        bool ret = false;
+        try
+        {
+            ret = pt.isMember(key);
+        }
+        catch (exception &error_msg)
+        {
+            LOG(ERROR) << "find key error" << error_msg.what();
+            error = 1;
+            return false;
+        }
+        if (ret)
+        {
+            try
+            {
+                value = pt[key].asInt64();
+            }
+            catch (exception &error_msg)
+            {
+                LOG(ERROR) << "get value error" << error_msg.what();
+                error = 1;
+            }
+            return true;
+        }
+        else
+        {
+            error = 1;
+            return false;
+        }
+    }
+
+    inline bool get_value_inline(const string &key, uint64_t &value, Json::Value &pt)
+    {
+        bool ret = false;
+        try
+        {
+            ret = pt.isMember(key);
+        }
+        catch (exception &error_msg)
+        {
+            LOG(ERROR) << "find key error" << error_msg.what();
+            error = 1;
+            return false;
+        }
+        if (ret)
+        {
+            try
+            {
+                value = pt[key].asUInt64();
+            }
+            catch (exception &error_msg)
+            {
+                LOG(ERROR) << "get value error" << error_msg.what();
+                error = 1;
+            }
+            return true;
+        }
+        else
+        {
+            error = 1;
+            return false;
+        }
+    }
+
     inline bool get_value_inline(const string &key, double &value, Json::Value &pt)
     {
         bool ret = false;
