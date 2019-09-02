@@ -25,6 +25,7 @@
 #pragma once
 #include <exception>
 #include <map>
+#include <memory>
 #include <string>
 #include <typeinfo>
 #include <fstream>
@@ -141,15 +142,7 @@ public:
         }
     }
 
-    /*@function: get value of key from json string, result is stored in value
-             *@param: 1. key; 
-             *        2. value: value of key;
-             *        3. default_value: default value of key
-             *@ret: case 1. value of key is obtained from configuration: true;
-             *      case 2. value of key is obtained from default_value: false;
-             */
-    template <typename T>
-    bool get_value(const string &key, T &value, Json::Value &pt)
+    inline bool get_value_inline(const string &key, bool &value, Json::Value &pt)
     {
         bool ret = false;
         try
@@ -166,30 +159,13 @@ public:
         {
             try
             {
-                if (typeid(value) == typeid(bool))
-                    value = pt[key].asBool();
-                else if (typeid(value) == typeid(int64_t))
-                    value = pt[key].asInt64();
-                else if (typeid(value) == typeid(uint))
-                    value = pt[key].asUInt();
-                else if (typeid(value) == typeid(uint64_t))
-                    value = pt[key].asUInt64();
-                else if (typeid(value) == typeid(double))
-                    value = pt[key].asDouble();
-                else if (typeid(value) == typeid(float))
-                    value = pt[key].asFloat();
-                else
-                {
-                    error = 1;
-                    return false;
-                }
+                value = pt[key].asBool();
             }
             catch (exception &error_msg)
             {
                 LOG(ERROR) << "get value error" << error_msg.what();
                 error = 1;
             }
-
             return true;
         }
         else
@@ -199,8 +175,7 @@ public:
         }
     }
 
-    template <>
-    bool get_value(const string &key, int &value, Json::Value &pt)
+    inline bool get_value_inline(const string &key, int &value, Json::Value &pt)
     {
         bool ret = false;
         try
@@ -233,8 +208,40 @@ public:
         }
     }
 
-    template <>
-    bool get_value(const string &key, string &value, Json::Value &pt)
+    inline bool get_value_inline(const string &key, double &value, Json::Value &pt)
+    {
+        bool ret = false;
+        try
+        {
+            ret = pt.isMember(key);
+        }
+        catch (exception &error_msg)
+        {
+            LOG(ERROR) << "find key error" << error_msg.what();
+            error = 1;
+            return false;
+        }
+        if (ret)
+        {
+            try
+            {
+                value = pt[key].asDouble();
+            }
+            catch (exception &error_msg)
+            {
+                LOG(ERROR) << "get value error" << error_msg.what();
+                error = 1;
+            }
+            return true;
+        }
+        else
+        {
+            error = 1;
+            return false;
+        }
+    }
+
+    inline bool get_value_inline(const string &key, string &value, Json::Value &pt)
     {
         bool ret = false;
         try
@@ -265,6 +272,19 @@ public:
             error = 1;
             return false;
         }
+    }
+
+    /*@function: get value of key from json string, result is stored in value
+             *@param: 1. key; 
+             *        2. value: value of key;
+             *        3. default_value: default value of key
+             *@ret: case 1. value of key is obtained from configuration: true;
+             *      case 2. value of key is obtained from default_value: false;
+             */
+    template <typename T>
+    bool get_value(const string &key, T &value, Json::Value &pt)
+    {
+        return get_value_inline(key, value, pt);
     }
 
     template <typename T>

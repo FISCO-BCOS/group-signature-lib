@@ -1,4 +1,3 @@
-
 file(GLOB ALGORITHM_BBS04_SRC "algorithm/bbs04/*.cpp")
 file(GLOB ALGORITHM_BBS04_HEADERS "algorithm/bbs04/*.h")
 
@@ -31,7 +30,6 @@ target_link_libraries(group_sig PUBLIC Pbc_sig Pbc Gmp Cryptopp JsonCpp)
 add_dependencies(group_sig Pbc_sig Pbc Gmp Cryptopp JsonCpp) 
 
 INSTALL(TARGETS group_sig RUNTIME DESTINATION bin/ ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
-
 INSTALL(FILES ${ALGORITHM_BBS04_HEADERS} DESTINATION include/group_sig/algorithm/bbs04/) 
 INSTALL(FILES ${ALGORITHM_RING_SIG_HEADERS} DESTINATION include/group_sig/algorithm/ring-sig/) 
 INSTALL(FILES ${ALGORITHM_HEADERS} DESTINATION include/group_sig/algorithm/) 

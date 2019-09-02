@@ -22,6 +22,8 @@
 #pragma once
 #include <sys/stat.h>
 #include <string>
+#include <cstring>
+#include <cassert>
 #include <unistd.h>
 #include <exception>
 #include <vector>
