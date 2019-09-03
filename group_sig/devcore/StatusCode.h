@@ -31,6 +31,7 @@ namespace CommonStatusCode
 {
 const static int SUCCESS = 0;
 const static int UNKOWN_RET = 1;
+const static int DECODE_BASE64_ERR = 2;
 } // namespace CommonStatusCode
 //0-100
 namespace GroupSigStatusCode

@@ -125,7 +125,6 @@ std::string FromBase64(std::string const &encoded_string)
         if (!is_base64(encoded_string[in_]))
         {
             throw std::string("not base64 encoding");
-            return NULL;
         }
         char_array_4[i++] = encoded_string[in_];
         in_++;
