@@ -74,4 +74,12 @@ const static int RING_SIZE_TOO_BIG = 10210;
 const static int RING_SIG_VERIFY_FAILED = 10211;
 const static int INVALID_RING_SIZE = 10212;
 } // namespace RingSigStatusCode
+
+namespace DBAccessStatus
+{
+const static int KEY_EXIST = 10301;
+const static int KEY_NOT_EXIST = 10302;
+const static int DB_CORRUPTION = 10303;
+const static int IO_ERROR = 10304;
+} // namespace DBAccessStatus
 } // namespace RetCode
