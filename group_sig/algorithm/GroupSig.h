@@ -29,20 +29,20 @@ extern "C"
 #endif
 
 #if defined(__cplusplus)
-   namespace GroupSigApi
-   {
+  namespace GroupSigApi
+  {
 #endif
 
-   struct GroupInfo
-   {
-      std::string gpk;
-      std::string gmsk;
-      std::string gamma;
-      std::string param;
-      GroupInfo(std::string &g1, std::string &g2, std::string &g3, std::string &g4) : gpk(g1), gmsk(g2), gamma(g3), param(g4) {}
-   };
+  struct GroupInfo
+  {
+    std::string gpk;
+    std::string gmsk;
+    std::string gamma;
+    std::string param;
+    GroupInfo(std::string &g1, std::string &g2, std::string &g3, std::string &g4) : gpk(g1), gmsk(g2), gamma(g3), param(g4) {}
+  };
 
-   /* @function: create group with default linear pair(A Linear pair)
+  /* @function: create group with default linear pair(A Linear pair)
      * @params: 1. result: return value, include "group public key", 
      *          "group manager private key(gmsk)",
      *          "group private key(gamma)" and 
@@ -57,11 +57,12 @@ extern "C"
      *       other ret_code: create group failed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int create_group_default(std::string &result,
-                            const std::string &algorithm_method);
-   GroupInfo create_group_default();
+  int create_group_default(std::string &result,
+                           const std::string &algorithm_method);
 
-   /* @function: create group with specified linear pair param 
+  GroupInfo create_group_default();
+
+  /* @function: create group with specified linear pair param 
      * @params: 1. result: return value, include "group public key(gpk)",
      *         "group mananger private key(gmsk)", 
      *         "group private key(gamma)" and 
@@ -86,13 +87,13 @@ extern "C"
      *       other ret_code: create group failed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int create_group(std::string &result,
-                    const std::string &algorithm_method,
-                    const std::string &pbc_param_str);
+  int create_group(std::string &result,
+                   const std::string &algorithm_method,
+                   const std::string &pbc_param_str);
 
-   GroupInfo create_group(const std::string &pbc_param_str);
-   //group  member join: group manager generate private key && cert for group members
-   /* @function: generate private key and cert for joined member 
+  GroupInfo create_group(const std::string &pbc_param_str);
+  //group  member join: group manager generate private key && cert for group members
+  /* @function: generate private key and cert for joined member 
      * @params: 1. gsk: return value, private key and cert of joined group member;
      *         
      *         2. algorithm_method: algorithm of group signature implemented with,
@@ -114,19 +115,19 @@ extern "C"
      *       other ret_code: generate private key and cert for group member failed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int group_member_join(std::string &sk,
-                         const std::string &algorithm_method,
-                         const std::string &pbc_param_info,
-                         const std::string &gmsk_info,
-                         const std::string &gpk_info,
-                         const std::string &gamma_info);
+  int group_member_join(std::string &sk,
+                        const std::string &algorithm_method,
+                        const std::string &pbc_param_info,
+                        const std::string &gmsk_info,
+                        const std::string &gpk_info,
+                        const std::string &gamma_info);
 
-   std::string group_member_join(const std::string &pbc_param_info,
-                                 const std::string &gmsk_info,
-                                 const std::string &gpk_info,
-                                 const std::string &gamma_info);
+  std::string group_member_join(const std::string &pbc_param_info,
+                                const std::string &gmsk_info,
+                                const std::string &gpk_info,
+                                const std::string &gamma_info);
 
-   /* @function: generate signature with specified group sig algorithm   
+  /* @function: generate signature with specified group sig algorithm   
      * @params: 1. result: signature 
      *          2. algorithm_method: algorithm of group signature implemented with,
      *             such as bbs04, bs04_vlr, achm05, only support bbs04 now
@@ -140,18 +141,18 @@ extern "C"
      *       other ret_code: generate signature failed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int group_sig(std::string &result,
-                 const std::string &algorithm_method,
-                 const std::string &gpk_info,
-                 const std::string &sk_info,
-                 const std::string &pbc_param_info,
-                 const std::string &message);
+  int group_sig(std::string &result,
+                const std::string &algorithm_method,
+                const std::string &gpk_info,
+                const std::string &sk_info,
+                const std::string &pbc_param_info,
+                const std::string &message);
 
-   std::string group_sig(const std::string &gpk_info,
-                         const std::string &sk_info,
-                         const std::string &pbc_param_info,
-                         const std::string &message);
-   /* @function: verify specified signature 
+  std::string group_sig(const std::string &gpk_info,
+                        const std::string &sk_info,
+                        const std::string &pbc_param_info,
+                        const std::string &message);
+  /* @function: verify specified signature 
      * @params: 1. ret: return value, 
      *          indicate specified signature is valid or not
      *          2. message: plain text of specified signature
@@ -166,20 +167,20 @@ extern "C"
      *       other ret_code: callback verify function failed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int group_verify(int &ret,
-                    const std::string &sig,
+  int group_verify(int &ret,
+                   const std::string &sig,
+                   const std::string &message,
+                   const std::string &algorithm_method,
+                   const std::string &gpk_info,
+                   const std::string &pbc_param_info);
+
+  bool group_verify(const std::string &sig,
                     const std::string &message,
-                    const std::string &algorithm_method,
                     const std::string &gpk_info,
                     const std::string &pbc_param_info);
 
-   bool group_verify(const std::string &sig,
-                     const std::string &message,
-                     const std::string &gpk_info,
-                     const std::string &pbc_param_info);
-
-   //implementation of group open with given signature
-   /* @function: get cert according to given signature
+  //implementation of group open with given signature
+  /* @function: get cert according to given signature
                  (only group manager can calculate the cert)
                  (generally used in regulation cases)
 
@@ -197,21 +198,21 @@ extern "C"
      *       other ret_code: callback open_cert function failed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int open_cert(std::string &cert,
-                 const std::string &algorithm_method,
-                 const std::string &sig,
-                 const std::string &message,
-                 const std::string &gpk_info,
-                 const std::string &gmsk_info,
-                 const std::string &pbc_param_info);
+  int open_cert(std::string &cert,
+                const std::string &algorithm_method,
+                const std::string &sig,
+                const std::string &message,
+                const std::string &gpk_info,
+                const std::string &gmsk_info,
+                const std::string &pbc_param_info);
 
-   std::string open_cert(const std::string &sig,
-                         const std::string &message,
-                         const std::string &gpk_info,
-                         const std::string &gmsk_info,
-                         const std::string &pbc_param_info);
-   //update gpk when group memeber revoked(executed by group manager)
-   /* @function: update gpk when group member revoked
+  std::string open_cert(const std::string &sig,
+                        const std::string &message,
+                        const std::string &gpk_info,
+                        const std::string &gmsk_info,
+                        const std::string &pbc_param_info);
+  //update gpk when group memeber revoked(executed by group manager)
+  /* @function: update gpk when group member revoked
      * @params: 1. gpk: public key of the group the revoked member belongs to
      *                  (gpk is updated after member revoked)
      *          2.algorithm_method: algorithm of group signature implemented with,
@@ -226,17 +227,17 @@ extern "C"
      *       other ret_code: callback revoke_member function failed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int revoke_member(std::string &gpk,
-                     const std::string &algorithm_method,
-                     const std::string &pbc_param,
-                     const std::string &revoke_info,
-                     const std::string &gamma_info);
+  int revoke_member(std::string &gpk,
+                    const std::string &algorithm_method,
+                    const std::string &pbc_param,
+                    const std::string &revoke_info,
+                    const std::string &gamma_info);
 
-   std::string revoke_member(const std::string &pbc_param,
-                             const std::string &revoke_info,
-                             const std::string &gamma_info);
+  std::string revoke_member(const std::string &pbc_param,
+                            const std::string &revoke_info,
+                            const std::string &gamma_info);
 
-   /* @function: update group member private key after some members revoked
+  /* @function: update group member private key after some members revoked
      *            (callback by group member when it callback group_sig and some people
      *            hava revoked from the group)
      * @params: 1. gsk: input value && output value,
@@ -259,19 +260,19 @@ extern "C"
      *       other ret_code: callback update private key function succeed
      *       (failed reasons maybe input param can't be parsed...)
      */
-   int revoke_update_private_key(std::string &sk,
-                                 const std::string &algorithm_method,
-                                 const std::string &pbc_param,
-                                 const std::string &revoke_list,
-                                 const std::string &gone_list,
-                                 const std::string &gpk_info);
+  int revoke_update_private_key(std::string &sk,
+                                const std::string &algorithm_method,
+                                const std::string &pbc_param,
+                                const std::string &revoke_list,
+                                const std::string &gone_list,
+                                const std::string &gpk_info);
 
-   std::string revoke_update_private_key(const std::string &pbc_param,
-                                         const std::string &revoke_list,
-                                         const std::string &gone_list,
-                                         const std::string &gpk_info);
+  std::string revoke_update_private_key(const std::string &pbc_param,
+                                        const std::string &revoke_list,
+                                        const std::string &gone_list,
+                                        const std::string &gpk_info);
 #if defined(__cplusplus)
-   }
+  }
 #endif
 #if !defined(__cplusplus)
 }

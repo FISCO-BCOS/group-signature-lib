@@ -22,7 +22,7 @@
 #include "time.h"
 
 #include "group_sig/devcore/CommonFunc.h"
-
+#include "group_sig/devcore/Base64.h"
 #include "group_sig/algorithm/KeyLoaderDumper.h"
 #include "GroupSig_BBS_Impl.h"
 #include "GroupSig_BBS.h"
@@ -39,7 +39,7 @@ const string BBSGroupSig::RET_DELIM = "*";
 void BBSGroupSig::copy_string_to_result(string &result,
                                         const string &src, bool need_split)
 {
-    result += src;
+    result += ToBase64(src);
     if (need_split)
         result += RET_DELIM;
     LOG(DEBUG) << "copy_string_to_result, result:" << result;
@@ -505,19 +505,20 @@ int BBSGroupSig::create_group_key(std::string &result,
     bbs_gen_key(gpk, gmsk, gamma, sys_param);
     //将gpk && gmsk序列化成字符串
     LOG(DEBUG) << "STORE GPK";
-    int key_store_succ = KeyManager<BBSKey>::store_gpk(result, gpk);
+    string sgpk;
+    int key_store_succ = KeyManager<BBSKey>::store_gpk(sgpk, gpk);
     if (key_store_succ != SUCCESS)
         return key_store_succ;
-    result += RET_DELIM;
+    copy_string_to_result(result, sgpk, true);
     string tmp;
     LOG(DEBUG) << "STORE GMSK";
     key_store_succ = KeyManager<BBSKey>::store_gmsk(tmp, gmsk);
     if (key_store_succ != SUCCESS)
         return key_store_succ;
-    copy_string_to_result(result, tmp);
+    copy_string_to_result(result, tmp, true);
     LOG(DEBUG) << "STORE GAMMA";
     tmp = trans_to_string(gamma);
-    copy_string_to_result(result, tmp);
+    copy_string_to_result(result, tmp, true);
     element_clear(gamma);
     LOG(DEBUG) << "STORE pbc_param";
     copy_string_to_result(result, pbc_param_str, false);
