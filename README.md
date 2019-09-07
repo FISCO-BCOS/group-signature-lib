@@ -290,4 +290,4 @@ make install
 
 
 
-Paillier的开源协议为[APACHE LICENSE 2.0](http://www.apache.org/licenses/). 详情参考[LICENSE](./LICENSE)。
+Group-Signature的开源协议为[APACHE LICENSE 2.0](http://www.apache.org/licenses/). 详情参考[LICENSE](./LICENSE)。
