@@ -146,7 +146,7 @@ make install
   | ------------ | -------- | -------------- |
   | gpk_info     | string   | 群公钥         |
   | sk_info      | string   | 成员私钥和证书 |
-  | gamma_info   | string   | 群参数         |
+  | param_info   | string   | 群参数         |
   | message      | string   | 消息           |
   | **输出参数** | **类型** | **说明**       |
   | 返回值       | string   | 群签名         |
@@ -193,7 +193,7 @@ make install
   | gpk_info     | string   | 群公钥                 |
   | param_info   | string   | 消息                   |
   | revoke_info  | string   | 被撤销成员的私钥和证书 |
-  | gamma_info   | string   | 群主私钥               |
+  | gamma_info   | string   | 群私钥                 |
   | **输出参数** | **类型** | **说明**               |
   | 返回值       | string   | 新的群公钥             |
 
@@ -225,7 +225,7 @@ make install
 
   | 输入参数     | 类型     | 说明           |
   | ------------ | -------- | -------------- |
-  | bit_len      | string   | 指定环参数长度 |
+  | bit_len      | int      | 指定环参数长度 |
   | **输出参数** | **类型** | **说明**       |
   | 返回值       | string   | 环参数         |
 
@@ -248,14 +248,14 @@ make install
 
 - 参数说明
 
-  | 输入参数         | 类型             | 说明                        |
-  | ---------------- | ---------------- | --------------------------- |
-  | message          | string           | 消息                        |
-  | public_key_list  | vector\<string\> | 成员在环中的位置，从“0”开始 |
-  | private_key_info | string           | 私钥                        |
-  | param_info       | string           | 环参数                      |
-  | **输出参数**     | **类型**         | **说明**                    |
-  | 返回值           | pair             | 公私钥对                    |
+  | 输入参数         | 类型             | 说明     |
+  | ---------------- | ---------------- | -------- |
+  | message          | string           | 消息     |
+  | public_key_list  | vector\<string\> | 公钥列表 |
+  | private_key_info | string           | 私钥     |
+  | param_info       | string           | 环参数   |
+  | **输出参数**     | **类型**         | **说明** |
+  | 返回值           | pair             | 公私钥对 |
 
 - 接口名称：**ring_verify**
 
