@@ -22,6 +22,8 @@
  */
 
 #pragma once
+#include <vector>
+#include <string>
 
 #if !defined(__cplusplus)
 extern "C"
@@ -29,50 +31,45 @@ extern "C"
 #endif
 
 #if defined(__cplusplus)
-  namespace GroupSigApi
-  {
+   namespace GroupSigApi
+   {
 #endif
 
-  struct GroupInfo
-  {
-    std::string gpk;
-    std::string gmsk;
-    std::string gamma;
-    std::string param;
-    GroupInfo(std::string &g1, std::string &g2, std::string &g3, std::string &g4) : gpk(g1), gmsk(g2), gamma(g3), param(g4) {}
-  };
+   // struct for group information
+   struct GroupInfo
+   {
+      std::string gpk, gmsk, gamma, param;
+      GroupInfo() {}
+      GroupInfo(std::string &in1, std::string &in2, std::string &in3, std::string &in4) : gpk(in1), gmsk(in2), gamma(in3), param(in4) {}
+   };
 
-  /* @function: create group with default linear pair(A Linear pair)
-     * @params: 1. result: return value, include "group public key", 
-     *          "group manager private key(gmsk)",
-     *          "group private key(gamma)" and 
-     *          "pbc param used in the algorithm(pbc_param)",
-     *          these information is splited with "*"
-     *
-     *          2. algorithm_method: algorithm of group sig,
-     *          such as bbs04, bs04_vlr, achm05, only support bbs04 now
-     *
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): create group succeed
-     *       other ret_code: create group failed
-     *       (failed reasons maybe input param can't be parsed...)
+   /******************* notification ********************
+   *                                                    *
+   *  All interfaces would throw string type exception  *
+   *                                                    *
+   ******************** notification ********************/
+
+   // get cert from private key
+   std::string get_cert(const std::string &sk_info);
+
+   // get g1 list after revoking members, and input is the list of new gpk
+   std::string get_g1_list(std::vector<std::string> &new_gpks_info);
+
+   /* @function: create group with default linear pair(A Linear pair)
+     * @ret: GroupInfo, includes :
+     *       "group public key(gpk)", 
+     *       "group manager private key(gmsk)",
+     *       "group private key(gamma)" and 
+     *       "pbc param used in the algorithm(pbc_param)",
      */
-  int create_group_default(std::string &result,
-                           const std::string &algorithm_method);
+   GroupInfo create_group_default();
 
-  GroupInfo create_group_default();
+   // c language style interface with same funtion, please ignore
+   int create_group_default(std::string &result,
+                            const std::string &algorithm_method);
 
-  /* @function: create group with specified linear pair param 
-     * @params: 1. result: return value, include "group public key(gpk)",
-     *         "group mananger private key(gmsk)", 
-     *         "group private key(gamma)" and 
-     *         "pbc param used in the algorithm(pbc_param)", these information
-     *         is splited with "*"
-     *
-     *         2. algorithm_method: algorithm of group signature implemented with,
-     *         such as bbs04, bs04_vlr, achm05, only support bbs04 now
-     *
-     *         3. pbc_param_str: specified pbc param information:
+   /* @function: create group with specified linear pair param 
+     * @params: pbc_param_str: specified pbc param information:
      *         (1) A type linear param (q_bits_len and r_bits_len can be self-specified):
      *            "{\"linear_type\": \"a\", \"q_bits_len\": , \"r_bits_len\": 256, \"q_bits_len\":256}"
      *         (2) A1 type linear pair (order can be self-specified):
@@ -82,197 +79,168 @@ extern "C"
      *         (4) F type linear pair (bit_len can be self-specified):
      *            "{\"linear_type\":\"f\", \"bit_len\": 256}"
      *
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): create group succeed
-     *       other ret_code: create group failed
-     *       (failed reasons maybe input param can't be parsed...)
+     * @ret: GroupInfo, includes :
+     *       "group public key(gpk)", 
+     *       "group manager private key(gmsk)",
+     *       "group private key(gamma)" and 
+     *       "pbc param used in the algorithm(pbc_param)",
      */
-  int create_group(std::string &result,
-                   const std::string &algorithm_method,
-                   const std::string &pbc_param_str);
+   GroupInfo create_group(const std::string &pbc_param_str);
 
-  GroupInfo create_group(const std::string &pbc_param_str);
-  //group  member join: group manager generate private key && cert for group members
-  /* @function: generate private key and cert for joined member 
-     * @params: 1. gsk: return value, private key and cert of joined group member;
-     *         
-     *         2. algorithm_method: algorithm of group signature implemented with,
-     *         such as bbs04, bs04_vlr, achm05, only support bbs04 now
+   // c language style interface with same funtion, please ignore
+   int create_group(std::string &result,
+                    const std::string &algorithm_method,
+                    const std::string &pbc_param_str);
+
+   //group  member join: group manager generate private key && cert for group members
+   /* @function: generate private key and cert for joined member 
+     * @params: 1. pbc_param_info: pbc param information of group to be joined
+     *          (generally obtained upon group generation, and open to others) 
      *
-     *         3. pbc_param_info: pbc param information of group to be joined
-     *         (generally obtained upon group generation, and open to others) 
+     *          2. gmsk_info: private key of group manager
+     *            (Thus, group mananger gen private key and cert for group member)
      *
-     *         4. gmsk_info: private key of group manager
-     *         (Thus, group mananger gen private key and cert for group member)
+     *          3. gpk_info: public key of the group
+     *          (generated upon create_group)
      *
-     *         5. gpk_info: public key of the group
-     *         (generated upon create_group)
-     *
-     *         6. gamma_info: private information maintained by group member 
+     *          4. gamma_info: private information maintained by group member 
      
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): generate private key and cert for group member succeed
-     *       other ret_code: generate private key and cert for group member failed
-     *       (failed reasons maybe input param can't be parsed...)
+     * @ret: sk: private key and cert of joined group member;
      */
-  int group_member_join(std::string &sk,
-                        const std::string &algorithm_method,
-                        const std::string &pbc_param_info,
-                        const std::string &gmsk_info,
-                        const std::string &gpk_info,
-                        const std::string &gamma_info);
+   std::string group_member_join(const std::string &param_info,
+                                 const std::string &gmsk_info,
+                                 const std::string &gpk_info,
+                                 const std::string &gamma_info);
 
-  std::string group_member_join(const std::string &pbc_param_info,
-                                const std::string &gmsk_info,
-                                const std::string &gpk_info,
-                                const std::string &gamma_info);
+   // c language style interface with same funtion, please ignore
+   int group_member_join(std::string &sk,
+                         const std::string &algorithm_method,
+                         const std::string &param_info,
+                         const std::string &gmsk_info,
+                         const std::string &gpk_info,
+                         const std::string &gamma_info);
 
-  /* @function: generate signature with specified group sig algorithm   
-     * @params: 1. result: signature 
-     *          2. algorithm_method: algorithm of group signature implemented with,
-     *             such as bbs04, bs04_vlr, achm05, only support bbs04 now
-     *          3. gpk_info: public key of the group 
-     *          4. gsk_info: private key of the member to generate signature
-     *          5. pbc_param_info: pbc param information of the group  
-     *          6. message: plain text to generate group signature
+   /* @function: generate signature with specified group sig algorithm   
+     * @params: 1. gpk_info: public key of the group 
+     *          2. sk_info: private key of the member to generate signature
+     *          3. param_info: pbc param information of the group  
+     *          4. message: plain text to generate group signature
      *
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): generate signature succeed
-     *       other ret_code: generate signature failed
-     *       (failed reasons maybe input param can't be parsed...)
+     * @ret: signature 
      */
-  int group_sig(std::string &result,
-                const std::string &algorithm_method,
-                const std::string &gpk_info,
-                const std::string &sk_info,
-                const std::string &pbc_param_info,
-                const std::string &message);
+   std::string group_sig(const std::string &gpk_info,
+                         const std::string &sk_info,
+                         const std::string &param_info,
+                         const std::string &message);
 
-  std::string group_sig(const std::string &gpk_info,
-                        const std::string &sk_info,
-                        const std::string &pbc_param_info,
-                        const std::string &message);
-  /* @function: verify specified signature 
-     * @params: 1. ret: return value, 
-     *          indicate specified signature is valid or not
-     *          2. message: plain text of specified signature
-     *          3. sig: signature
-     *          4. algorithm_method: algorithm of group signature implemented with,
-     *             such as bbs04, bs04_vlr, achm05, only support bbs04 now
-     *          5. gpk_info: public key of the group the signature belongs to
-     *          6. pbc_param_info: pbc param information of the group the signature belongs to
-     
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): callback verify function succeed
-     *       other ret_code: callback verify function failed
-     *       (failed reasons maybe input param can't be parsed...)
+   // c language style interface with same funtion, please ignore
+   int group_sig(std::string &result,
+                 const std::string &algorithm_method,
+                 const std::string &gpk_info,
+                 const std::string &sk_info,
+                 const std::string &param_info,
+                 const std::string &message);
+
+   /* @function: verify specified signature 
+     * @params: 1. message: plain text of specified signature
+     *          2. sig: signature
+     *          3. gpk_info: public key of the group the signature belongs to
+     *          4. aram_info: pbc param information of the group the signature belongs to
+     * 
+     * @ret: true: signature is valid; false: signature is invalid;
      */
-  int group_verify(int &ret,
-                   const std::string &sig,
-                   const std::string &message,
-                   const std::string &algorithm_method,
-                   const std::string &gpk_info,
-                   const std::string &pbc_param_info);
+   bool group_verify(const std::string &sig,
+                     const std::string &message,
+                     const std::string &gpk_info,
+                     const std::string &param_info);
 
-  bool group_verify(const std::string &sig,
+   // c language style interface with same funtion, please ignore
+   int group_verify(int &ret,
+                    const std::string &sig,
                     const std::string &message,
+                    const std::string &algorithm_method,
                     const std::string &gpk_info,
-                    const std::string &pbc_param_info);
+                    const std::string &param_info);
 
-  //implementation of group open with given signature
-  /* @function: get cert according to given signature
+   //implementation of group open with given signature
+   /* @function: get cert according to given signature
                  (only group manager can calculate the cert)
                  (generally used in regulation cases)
 
-     * @param: 1. cert:
-     *         2.algorithm_method: algorithm of group signature implemented with,
-     *             such as bbs04, bs04_vlr, achm05, only support bbs04 now
-     *         3. sig: specified signature to get its signer
-     *         4. message: plain message of this signature
-     *         5. gpk_info: public key of the group
-     *         6. gmsk_info: private key of group manager
-     *         7. pbc_param_info: pbc param information of the group the signature belongs to
+     * @param: 1. sig: specified signature to get its signer
+     *         2. message: plain message of this signature
+     *         3. gpk_info: public key of the group
+     *         4. gmsk_info: private key of group manager
+     *         5. param_info: pbc param information of the group the signature belongs to
      *
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): callback open_cert function succeed
-     *       other ret_code: callback open_cert function failed
-     *       (failed reasons maybe input param can't be parsed...)
+     * @ret: cert
      */
-  int open_cert(std::string &cert,
-                const std::string &algorithm_method,
-                const std::string &sig,
-                const std::string &message,
-                const std::string &gpk_info,
-                const std::string &gmsk_info,
-                const std::string &pbc_param_info);
+   std::string open_cert(const std::string &sig,
+                         const std::string &message,
+                         const std::string &gpk_info,
+                         const std::string &gmsk_info,
+                         const std::string &param_info);
 
-  std::string open_cert(const std::string &sig,
-                        const std::string &message,
-                        const std::string &gpk_info,
-                        const std::string &gmsk_info,
-                        const std::string &pbc_param_info);
-  //update gpk when group memeber revoked(executed by group manager)
-  /* @function: update gpk when group member revoked
+   // c language style interface with same funtion, please ignore
+   int open_cert(std::string &cert,
+                 const std::string &algorithm_method,
+                 const std::string &sig,
+                 const std::string &message,
+                 const std::string &gpk_info,
+                 const std::string &gmsk_info,
+                 const std::string &param_info);
+
+   //update gpk when group memeber revoked(executed by group manager)
+   /* @function: update gpk when group member revoked
      * @params: 1. gpk: public key of the group the revoked member belongs to
-     *                  (gpk is updated after member revoked)
-     *          2.algorithm_method: algorithm of group signature implemented with,
-     *             such as bbs04, bs04_vlr, achm05, only support bbs04 now
-     *          3. pbc_param: pbc param of the group the revoked member belongs to
-     *          4. revoke_info: private and cert information of revoked member
-     *          5. gamma_info: private information of the group, it is maintained by
-     *                         group manager
+     *          2. param_info: pbc param of the group the revoked member belongs to
+     *          3. revoke_info: private and cert information of revoked member
+     *          4. gamma_info: private information of the group, it is maintained by
+     *             group manager
      *
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): callback revoke_member function succeed
-     *       other ret_code: callback revoke_member function failed
-     *       (failed reasons maybe input param can't be parsed...)
+     * @ret: new gpk
      */
-  int revoke_member(std::string &gpk,
-                    const std::string &algorithm_method,
-                    const std::string &pbc_param,
-                    const std::string &revoke_info,
-                    const std::string &gamma_info);
+   std::string revoke_member(const std::string &gpk_info,
+                             const std::string &param_info,
+                             const std::string &revoke_info,
+                             const std::string &gamma_info);
 
-  std::string revoke_member(const std::string &pbc_param,
-                            const std::string &revoke_info,
-                            const std::string &gamma_info);
+   // c language style interface with same funtion, please ignore
+   int revoke_member(std::string &gpk_info,
+                     const std::string &algorithm_method,
+                     const std::string &param_info,
+                     const std::string &revoke_info,
+                     const std::string &gamma_info);
 
-  /* @function: update group member private key after some members revoked
+   /* @function: update group member private key after some members revoked
      *            (callback by group member when it callback group_sig and some people
      *            hava revoked from the group)
-     * @params: 1. gsk: input value && output value,
-     *                  input vaule: origin private key of specified group member
-     *                  output value: updated private key used for generating signature
-     *                  after some people revoked
+     * @params: 1. sk: origin private key of specified group member
+     *          2. param_info: pbc param of the group the member belongs to
+     *          3. revoked list: private keys and certs of revoked members since the 
+     *             member update its private key last time
+     *          4. g1_list: all new g1(part of gpk) information since the member update 
+     *             its private key last time
+     *          5. gpk_info: public key of group the member belongs to 
      *
-     *          2.algorithm_method: algorithm of group signature implemented with,
-     *             such as bbs04, bs04_vlr, achm05, only support bbs04 now
-     *           
-     *          3. pbc_param: pbc param of the group the member belongs to
-     *          4. revoked list: private keys and certs of revoked members since the 
-     *                           member update its private key last time
-     *          6. gone_list: gone information since the member update its private key
-     *                        last time
-     *          7. gpk_info: public key of group the member belongs to 
-     *
-     * @ret: ret_code, defined in file "devcore/StatusCode.h"
-     *       SUCCESS(0): callback update private key function succeed
-     *       other ret_code: callback update private key function succeed
-     *       (failed reasons maybe input param can't be parsed...)
+     * @ret: new sk
      */
-  int revoke_update_private_key(std::string &sk,
-                                const std::string &algorithm_method,
-                                const std::string &pbc_param,
-                                const std::string &revoke_list,
-                                const std::string &gone_list,
-                                const std::string &gpk_info);
+   std::string revoke_update_private_key(const std::string &sk_info,
+                                         const std::string &param_info,
+                                         const std::string &revoke_list,
+                                         const std::string &g1_list,
+                                         const std::string &gpk_info);
 
-  std::string revoke_update_private_key(const std::string &pbc_param,
-                                        const std::string &revoke_list,
-                                        const std::string &gone_list,
-                                        const std::string &gpk_info);
+   // c language style interface with same funtion, please ignore
+   int revoke_update_private_key(std::string &sk_info,
+                                 const std::string &algorithm_method,
+                                 const std::string &param_info,
+                                 const std::string &revoke_list,
+                                 const std::string &g1_list,
+                                 const std::string &gpk_info);
+
 #if defined(__cplusplus)
-  }
+   }
 #endif
 #if !defined(__cplusplus)
 }

@@ -17,7 +17,7 @@
 
 /* @file: RingSig.h
  * @author:fisco-bcos
- * @date:2018.03.06
+ * @date:2019.09.05
  * @function: interface of group signature algorithm 
  */
 #include <cryptopp/integer.h>
@@ -104,7 +104,6 @@ extern "C"
                 {
                         throw errorMsg;
                 }
-
                 std::string private_key, public_key;
                 if (dev::eth::LinkableRingSigImpl::join_ring(private_key, public_key, param, pos))
                 {
