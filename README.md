@@ -98,7 +98,7 @@ make install
   	string gamma;  // 群私钥
   	string param;  // 群参数
   	GroupInfo() {}
-  	GroupInfo(string &in1, string &in2, string &in3, string &in4) : 		gpk(in1), gmsk(in2), gamma(in3), param(in4) {}
+  	GroupInfo(string &in1, string &in2, string &in3, string &in4):gpk(in1), gmsk(in2), gamma(in3), param(in4) {}
   };
   ```
 
