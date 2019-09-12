@@ -31,45 +31,45 @@ extern "C"
 #endif
 
 #if defined(__cplusplus)
-   namespace GroupSigApi
-   {
+  namespace GroupSigApi
+  {
 #endif
 
-   // struct for group information
-   struct GroupInfo
-   {
-      std::string gpk, gmsk, gamma, param;
-      GroupInfo() {}
-      GroupInfo(std::string &in1, std::string &in2, std::string &in3, std::string &in4) : gpk(in1), gmsk(in2), gamma(in3), param(in4) {}
-   };
+  // struct for group information
+  struct GroupInfo
+  {
+    std::string gpk, gmsk, gamma, param;
+    GroupInfo() {}
+    GroupInfo(std::string &in1, std::string &in2, std::string &in3, std::string &in4) : gpk(in1), gmsk(in2), gamma(in3), param(in4) {}
+  };
 
-   /******************* notification ********************
+  /******************* notification ********************
    *                                                    *
    *  All interfaces would throw string type exception  *
    *                                                    *
    ******************** notification ********************/
 
-   // get cert from private key
-   std::string get_cert(const std::string &sk_info);
+  // get cert from private key
+  std::string get_cert(const std::string &sk_info);
 
-   // get g1 list after revoking members, and input is the list of new gpk
-   std::string get_g1_list(std::vector<std::string> &new_gpks_info);
+  // get g1 list after revoking members, and input is the list of new gpk
+  std::string get_g1_list(std::vector<std::string> &new_gpks_info);
 
-   /* @function: create group with default linear pair(A Linear pair)
+  /* @function: create group with default linear pair(A Linear pair)
      * @ret: GroupInfo, includes :
      *       "group public key(gpk)", 
      *       "group manager private key(gmsk)",
      *       "group private key(gamma)" and 
      *       "pbc param used in the algorithm(pbc_param)",
      */
-   GroupInfo create_group_default();
+  GroupInfo create_group_default();
 
-   // c language style interface with same funtion, please ignore
-   int create_group_default(std::string &result,
-                            const std::string &algorithm_method);
+  // c language style interface with same funtion, please ignore
+  int create_group_default(std::string &result,
+                           const std::string &algorithm_method);
 
-   /* @function: create group with specified linear pair param 
-     * @params: pbc_param_str: specified pbc param information:
+  /* @function: create group with specified linear pair param 
+     * @params: pbc_param: specified pbc param information:
      *         (1) A type linear param (q_bits_len and r_bits_len can be self-specified):
      *            "{\"linear_type\": \"a\", \"q_bits_len\": , \"r_bits_len\": 256, \"q_bits_len\":256}"
      *         (2) A1 type linear pair (order can be self-specified):
@@ -85,15 +85,15 @@ extern "C"
      *       "group private key(gamma)" and 
      *       "pbc param used in the algorithm(pbc_param)",
      */
-   GroupInfo create_group(const std::string &pbc_param_str);
+  GroupInfo create_group(const std::string &pbc_param);
 
-   // c language style interface with same funtion, please ignore
-   int create_group(std::string &result,
-                    const std::string &algorithm_method,
-                    const std::string &pbc_param_str);
+  // c language style interface with same funtion, please ignore
+  int create_group(std::string &result,
+                   const std::string &algorithm_method,
+                   const std::string &pbc_param);
 
-   //group  member join: group manager generate private key && cert for group members
-   /* @function: generate private key and cert for joined member 
+  //group  member join: group manager generate private key && cert for group members
+  /* @function: generate private key and cert for joined member 
      * @params: 1. pbc_param_info: pbc param information of group to be joined
      *          (generally obtained upon group generation, and open to others) 
      *
@@ -107,20 +107,20 @@ extern "C"
      
      * @ret: sk: private key and cert of joined group member;
      */
-   std::string group_member_join(const std::string &param_info,
-                                 const std::string &gmsk_info,
-                                 const std::string &gpk_info,
-                                 const std::string &gamma_info);
+  std::string group_member_join(const std::string &param_info,
+                                const std::string &gmsk_info,
+                                const std::string &gpk_info,
+                                const std::string &gamma_info);
 
-   // c language style interface with same funtion, please ignore
-   int group_member_join(std::string &sk,
-                         const std::string &algorithm_method,
-                         const std::string &param_info,
-                         const std::string &gmsk_info,
-                         const std::string &gpk_info,
-                         const std::string &gamma_info);
+  // c language style interface with same funtion, please ignore
+  int group_member_join(std::string &sk,
+                        const std::string &algorithm_method,
+                        const std::string &param_info,
+                        const std::string &gmsk_info,
+                        const std::string &gpk_info,
+                        const std::string &gamma_info);
 
-   /* @function: generate signature with specified group sig algorithm   
+  /* @function: generate signature with specified group sig algorithm   
      * @params: 1. gpk_info: public key of the group 
      *          2. sk_info: private key of the member to generate signature
      *          3. param_info: pbc param information of the group  
@@ -128,20 +128,20 @@ extern "C"
      *
      * @ret: signature 
      */
-   std::string group_sig(const std::string &gpk_info,
-                         const std::string &sk_info,
-                         const std::string &param_info,
-                         const std::string &message);
+  std::string group_sig(const std::string &gpk_info,
+                        const std::string &sk_info,
+                        const std::string &param_info,
+                        const std::string &message);
 
-   // c language style interface with same funtion, please ignore
-   int group_sig(std::string &result,
-                 const std::string &algorithm_method,
-                 const std::string &gpk_info,
-                 const std::string &sk_info,
-                 const std::string &param_info,
-                 const std::string &message);
+  // c language style interface with same funtion, please ignore
+  int group_sig(std::string &result,
+                const std::string &algorithm_method,
+                const std::string &gpk_info,
+                const std::string &sk_info,
+                const std::string &param_info,
+                const std::string &message);
 
-   /* @function: verify specified signature 
+  /* @function: verify specified signature 
      * @params: 1. message: plain text of specified signature
      *          2. sig: signature
      *          3. gpk_info: public key of the group the signature belongs to
@@ -149,21 +149,21 @@ extern "C"
      * 
      * @ret: true: signature is valid; false: signature is invalid;
      */
-   bool group_verify(const std::string &sig,
-                     const std::string &message,
-                     const std::string &gpk_info,
-                     const std::string &param_info);
-
-   // c language style interface with same funtion, please ignore
-   int group_verify(int &ret,
-                    const std::string &sig,
+  bool group_verify(const std::string &sig,
                     const std::string &message,
-                    const std::string &algorithm_method,
                     const std::string &gpk_info,
                     const std::string &param_info);
 
-   //implementation of group open with given signature
-   /* @function: get cert according to given signature
+  // c language style interface with same funtion, please ignore
+  int group_verify(int &ret,
+                   const std::string &sig,
+                   const std::string &message,
+                   const std::string &algorithm_method,
+                   const std::string &gpk_info,
+                   const std::string &param_info);
+
+  //implementation of group open with given signature
+  /* @function: get cert according to given signature
                  (only group manager can calculate the cert)
                  (generally used in regulation cases)
 
@@ -175,23 +175,23 @@ extern "C"
      *
      * @ret: cert
      */
-   std::string open_cert(const std::string &sig,
-                         const std::string &message,
-                         const std::string &gpk_info,
-                         const std::string &gmsk_info,
-                         const std::string &param_info);
+  std::string open_cert(const std::string &sig,
+                        const std::string &message,
+                        const std::string &gpk_info,
+                        const std::string &gmsk_info,
+                        const std::string &param_info);
 
-   // c language style interface with same funtion, please ignore
-   int open_cert(std::string &cert,
-                 const std::string &algorithm_method,
-                 const std::string &sig,
-                 const std::string &message,
-                 const std::string &gpk_info,
-                 const std::string &gmsk_info,
-                 const std::string &param_info);
+  // c language style interface with same funtion, please ignore
+  int open_cert(std::string &cert,
+                const std::string &algorithm_method,
+                const std::string &sig,
+                const std::string &message,
+                const std::string &gpk_info,
+                const std::string &gmsk_info,
+                const std::string &param_info);
 
-   //update gpk when group memeber revoked(executed by group manager)
-   /* @function: update gpk when group member revoked
+  //update gpk when group memeber revoked(executed by group manager)
+  /* @function: update gpk when group member revoked
      * @params: 1. gpk: public key of the group the revoked member belongs to
      *          2. param_info: pbc param of the group the revoked member belongs to
      *          3. revoke_info: private and cert information of revoked member
@@ -200,19 +200,19 @@ extern "C"
      *
      * @ret: new gpk
      */
-   std::string revoke_member(const std::string &gpk_info,
-                             const std::string &param_info,
-                             const std::string &revoke_info,
-                             const std::string &gamma_info);
+  std::string revoke_member(const std::string &gpk_info,
+                            const std::string &param_info,
+                            const std::string &revoke_info,
+                            const std::string &gamma_info);
 
-   // c language style interface with same funtion, please ignore
-   int revoke_member(std::string &gpk_info,
-                     const std::string &algorithm_method,
-                     const std::string &param_info,
-                     const std::string &revoke_info,
-                     const std::string &gamma_info);
+  // c language style interface with same funtion, please ignore
+  int revoke_member(std::string &gpk_info,
+                    const std::string &algorithm_method,
+                    const std::string &param_info,
+                    const std::string &revoke_info,
+                    const std::string &gamma_info);
 
-   /* @function: update group member private key after some members revoked
+  /* @function: update group member private key after some members revoked
      *            (callback by group member when it callback group_sig and some people
      *            hava revoked from the group)
      * @params: 1. sk: origin private key of specified group member
@@ -225,22 +225,22 @@ extern "C"
      *
      * @ret: new sk
      */
-   std::string revoke_update_private_key(const std::string &sk_info,
-                                         const std::string &param_info,
-                                         const std::string &revoke_list,
-                                         const std::string &g1_list,
-                                         const std::string &gpk_info);
+  std::string revoke_update_private_key(const std::string &sk_info,
+                                        const std::string &param_info,
+                                        const std::string &revoke_list,
+                                        const std::string &g1_list,
+                                        const std::string &gpk_info);
 
-   // c language style interface with same funtion, please ignore
-   int revoke_update_private_key(std::string &sk_info,
-                                 const std::string &algorithm_method,
-                                 const std::string &param_info,
-                                 const std::string &revoke_list,
-                                 const std::string &g1_list,
-                                 const std::string &gpk_info);
+  // c language style interface with same funtion, please ignore
+  int revoke_update_private_key(std::string &sk_info,
+                                const std::string &algorithm_method,
+                                const std::string &param_info,
+                                const std::string &revoke_list,
+                                const std::string &g1_list,
+                                const std::string &gpk_info);
 
 #if defined(__cplusplus)
-   }
+  }
 #endif
 #if !defined(__cplusplus)
 }

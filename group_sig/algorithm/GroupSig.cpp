@@ -141,37 +141,18 @@ GroupInfo create_group_default()
 
 int create_group(std::string &result,
                  const std::string &algorithm_method,
-                 const std::string &pbc_param_info)
+                 const std::string &pbc_param)
 {
-        LOG(DEBUG) << "CREATE GROUP WITH SPECIFIED PARAM:" << pbc_param_info;
+        LOG(DEBUG) << "CREATE GROUP WITH SPECIFIED PARAM:" << pbc_param;
         LOG(DEBUG) << "METHOD = " << algorithm_method;
         GroupSigMethod method = get_algo_method_by_string(algorithm_method);
-        std::string param;
-        try
-        {
-                param = FromBase64(pbc_param_info);
-        }
-        catch (std::string &errorMsg)
-        {
-                LOG(DEBUG) << errorMsg;
-                return DECODE_BASE64_ERR;
-        }
-        return GroupSigFactory::instance(method)->create_group(result, param);
+        return GroupSigFactory::instance(method)->create_group(result, pbc_param);
 }
 
-GroupInfo create_group(const std::string &param_info)
+GroupInfo create_group(const std::string &pbc_param)
 {
-        std::string param;
-        try
-        {
-                param = FromBase64(param_info);
-        }
-        catch (std::string &errorMsg)
-        {
-                throw errorMsg;
-        }
         std::string temp;
-        if (GroupSigFactory::instance(SIG_METHOD)->create_group(temp, param))
+        if (GroupSigFactory::instance(SIG_METHOD)->create_group(temp, pbc_param))
         {
                 throw std::string("create group failed");
         }
