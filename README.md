@@ -49,18 +49,18 @@
 
 签名库基于PBC Library密码库实现，该密码库依赖了高精度数学计算库GMP，因此需要先安装GMP。
 
-```
-// Centos
+```bash
+# CentOS
 sudo yum install gmp-static
-// Ubuntu
+# Ubuntu
 apt-get install libgmp-dev
-// Mac Os
+# Mac OS
 brew install gmp
 ```
 
 ### 编译安装
 
-```
+```bash
 # 下载源码
 git clone https://github.com/FISCO-BCOS/Group-Signature.git
 # 生成Makefile，CentOS请使用cmake3
@@ -89,7 +89,7 @@ make install
   | **输出参数** | **类型**  | **说明**           |
   | 返回值       | GroupInfo | 结构体，记录群信息 |
 
-  ```
+  ```c++
   // 结构体信息
   struct GroupInfo
   {
