@@ -13,14 +13,10 @@ ExternalProject_Add(cryptopp
     PATCH_COMMAND ${CMAKE_COMMAND} -E remove
         3way.cpp
         adler32.cpp
-        # algebra.cpp
-        # algparam.cpp
         arc4.cpp
-        # asn.cpp
         authenc.cpp
         base32.cpp
         base64.cpp
-        # basecode.cpp
         bench1.cpp
         bench2.cpp
         bfinit.cpp
@@ -35,79 +31,48 @@ ExternalProject_Add(cryptopp
         chacha.cpp
         channels.cpp
         cmac.cpp
-        # cpu.cpp
         crc.cpp
-        # cryptlib.cpp
         datatest.cpp
         default.cpp
         des.cpp
         dessp.cpp
         dh2.cpp
         dh.cpp
-        # dll.cpp
         dlltest.cpp
-        # dsa.cpp
         eax.cpp
-        # ec2n.cpp
-        # eccrypto.cpp
-        # ecp.cpp
         elgamal.cpp
         emsa2.cpp
-        # eprecomp.cpp
         esign.cpp
         files.cpp
-        # filters.cpp
-        # fips140.cpp
         fipsalgt.cpp
         fipstest.cpp
         gcm.cpp
         gf2_32.cpp
         gf256.cpp
-        # gf2n.cpp
-        # gfpcrypt.cpp
         gost.cpp
         gzip.cpp
-        # hex.cpp
-        # hmac.cpp
-        # hrtimer.cpp
         ida.cpp
         idea.cpp
-        # integer.cpp
-        # iterhash.cpp
-        # keccak.cpp
         luc.cpp
         mars.cpp
         marss.cpp
         md2.cpp
         md4.cpp
         md5.cpp
-        # misc.cpp
-        # modes.cpp
-        # mqueue.cpp
         mqv.cpp
-        # nbtheory.cpp
         network.cpp
-        # oaep.cpp
-        # osrng.cpp
         panama.cpp
         pch.cpp
         pkcspad.cpp
         poly1305.cpp
-        # polynomi.cpp
         pssr.cpp
-        # pubkey.cpp
-        # queue.cpp
         rabin.cpp
-        # randpool.cpp
         rc2.cpp
         rc5.cpp
         rc6.cpp
         rdrand.cpp
-        # rdtables.cpp
         regtest.cpp
-        # rijndael.cpp
         ripemd.cpp
-        # rng.cpp
         rsa.cpp
         rw.cpp
         safer.cpp
@@ -117,7 +82,6 @@ ExternalProject_Add(cryptopp
         serpent.cpp
         sha3.cpp
         shacal2.cpp
-        # sha.cpp
         sharkbox.cpp
         shark.cpp
         simple.cpp
@@ -126,7 +90,6 @@ ExternalProject_Add(cryptopp
         sosemanuk.cpp
         square.cpp
         squaretb.cpp
-        # strciphr.cpp
         tea.cpp
         test.cpp
         tftables.cpp
@@ -143,7 +106,6 @@ ExternalProject_Add(cryptopp
         wait.cpp
         wake.cpp
         whrlpool.cpp
-        # winpipes.cpp
         xtr.cpp
         xtrcrypt.cpp
         zdeflate.cpp
@@ -155,25 +117,21 @@ ExternalProject_Add(cryptopp
         -DCMAKE_POSITION_INDEPENDENT_CODE=${BUILD_SHARED_LIBS}
         -DBUILD_SHARED=Off
         -DBUILD_TESTING=Off
-        -DCMAKE_C_FLAGS=-Wa,-march=generic64
-        -DCMAKE_CXX_FLAGS=-Wa,-march=generic64
+        -DCMAKE_C_FLAGS=${MARCH_TYPE}
+        -DCMAKE_CXX_FLAGS=${MARCH_TYPE}
         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
     LOG_CONFIGURE 1
-    # Overwrite build and install commands to force Release build on MSVC.
     BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
     INSTALL_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release --target install
+    LOG_BUILD 1
     LOG_INSTALL 1
+    BUILD_BYPRODUCTS <INSTALL_DIR>/${CMAKE_INSTALL_LIBDIR}/libcryptopp.a
 )
-
-# Create cryptopp imported library
 ExternalProject_Get_Property(cryptopp INSTALL_DIR)
 add_library(Cryptopp STATIC IMPORTED)
-if (MSVC)
-    set(CRYPTOPP_LIBRARY ${INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}cryptopp-static${CMAKE_STATIC_LIBRARY_SUFFIX})
-else()
-    set(CRYPTOPP_LIBRARY ${INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}cryptopp${CMAKE_STATIC_LIBRARY_SUFFIX})
-endif()
+
+set(CRYPTOPP_LIBRARY ${INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}cryptopp${CMAKE_STATIC_LIBRARY_SUFFIX})
 set(CRYPTOPP_INCLUDE_DIR ${INSTALL_DIR}/include)
 file(MAKE_DIRECTORY ${CRYPTOPP_INCLUDE_DIR})  # Must exist.
 set_property(TARGET Cryptopp PROPERTY IMPORTED_LOCATION ${CRYPTOPP_LIBRARY})
