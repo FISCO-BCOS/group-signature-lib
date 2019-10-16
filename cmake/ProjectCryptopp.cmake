@@ -1,6 +1,8 @@
 include(ExternalProject)
 include(GNUInstallDirs)
 
+set(INSTALL_LIB cp -f ../cryptopp-build/libcryptopp.a ${CMAKE_SOURCE_DIR}/deps/lib)
+
 ExternalProject_Add(cryptopp
     PREFIX ${CMAKE_SOURCE_DIR}/deps
     # This points to unreleased version 5.6.5+ but contains very small
@@ -121,13 +123,15 @@ ExternalProject_Add(cryptopp
         -DCMAKE_CXX_FLAGS=${MARCH_TYPE}
         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    BUILD_COMMAND make
+    INSTALL_COMMAND make install
+    COMMAND ${INSTALL_LIB}
     LOG_CONFIGURE 1
     LOG_BUILD 1
     LOG_INSTALL 1
 )
 ExternalProject_Get_Property(cryptopp INSTALL_DIR)
 add_library(Cryptopp STATIC IMPORTED)
-execute_process(COMMAND cp -f ../cryptopp-build/libcryptopp.a ${CMAKE_SOURCE_DIR}/deps/lib)
 set(CRYPTOPP_LIBRARY ${INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}cryptopp${CMAKE_STATIC_LIBRARY_SUFFIX})
 set(CRYPTOPP_INCLUDE_DIR ${INSTALL_DIR}/include)
 file(MAKE_DIRECTORY ${CRYPTOPP_INCLUDE_DIR})  # Must exist.
