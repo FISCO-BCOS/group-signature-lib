@@ -122,13 +122,12 @@ ExternalProject_Add(cryptopp
         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
     LOG_CONFIGURE 1
-    BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
-    INSTALL_COMMAND make install && cp -f ../cryptopp-build/libcryptopp.a ${CMAKE_SOURCE_DIR}/deps/lib
     LOG_BUILD 1
     LOG_INSTALL 1
 )
 ExternalProject_Get_Property(cryptopp INSTALL_DIR)
 add_library(Cryptopp STATIC IMPORTED)
+execute_process(COMMAND cp -f ../cryptopp-build/libcryptopp.a ${CMAKE_SOURCE_DIR}/deps/lib)
 set(CRYPTOPP_LIBRARY ${INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}cryptopp${CMAKE_STATIC_LIBRARY_SUFFIX})
 set(CRYPTOPP_INCLUDE_DIR ${INSTALL_DIR}/include)
 file(MAKE_DIRECTORY ${CRYPTOPP_INCLUDE_DIR})  # Must exist.
