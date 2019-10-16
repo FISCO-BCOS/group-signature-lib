@@ -123,7 +123,7 @@ ExternalProject_Add(cryptopp
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
     LOG_CONFIGURE 1
     BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
-    INSTALL_COMMAND cp ../cryptopp-build/libcryptopp.a ${CMAKE_SOURCE_DIR}/deps/lib
+    INSTALL_COMMAND make install && cp -f ../cryptopp-build/libcryptopp.a ${CMAKE_SOURCE_DIR}/deps/lib
     LOG_BUILD 1
     LOG_INSTALL 1
 )
