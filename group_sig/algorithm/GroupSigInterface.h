@@ -70,6 +70,8 @@ public:
         p_linear = LinearPairFactory::create(pconfig_interface);
     }
 
+    virtual ~GroupSigInterface() {}
+
     std::string get_gpk_dir()
     {
         return gpk_info_dir;

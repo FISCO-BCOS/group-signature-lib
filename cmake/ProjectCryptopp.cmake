@@ -2,6 +2,7 @@ include(ExternalProject)
 include(GNUInstallDirs)
 
 set(INSTALL_LIB cp -f ../cryptopp-build/libcryptopp.a ${CMAKE_SOURCE_DIR}/deps/lib)
+set(MY_FLAGS "-march=x86-64 -mtune=generic -fvisibility=hidden -fvisibility-inlines-hidden")
 
 ExternalProject_Add(cryptopp
     PREFIX ${CMAKE_SOURCE_DIR}/deps
@@ -119,8 +120,8 @@ ExternalProject_Add(cryptopp
         -DCMAKE_POSITION_INDEPENDENT_CODE=${BUILD_SHARED_LIBS}
         -DBUILD_SHARED=Off
         -DBUILD_TESTING=Off
-        -DCMAKE_C_FLAGS=${MARCH_TYPE}
-        -DCMAKE_CXX_FLAGS=${MARCH_TYPE}
+        -DCMAKE_C_FLAGS=${MY_FLAGS}
+        -DCMAKE_CXX_FLAGS=${MY_FLAGS}
         -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
         -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
     BUILD_COMMAND make
