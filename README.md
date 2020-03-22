@@ -4,8 +4,8 @@
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 [![GitHub issues](https://img.shields.io/github/issues/FISCO-BCOS/group-signature-lib.svg)](https://github.com/FISCO-BCOS/group-signature-lib/issues)
-![GitHub All Releases](https://img.shields.io/github/downloads/FISCO-BCOS/group-signature-lib/total.svg)
-[![GitHub license](https://img.shields.io/github/license/FISCO-BCOS/group-signature-lib.svg)](https://github.com/FISCO-BCOS/group-signature-lib/blob/master/LICENSE)
+[![All releases](https://img.shields.io/github/release/FISCO-BCOS/group-signature-lib.svg)](https://github.com/FISCO-BCOS/group-signature-lib/releases)
+![](https://img.shields.io/github/license/FISCO-BCOS/group-signature-lib) 
 
 签名库基于[PBC Library](https://crypto.stanford.edu/pbc/)分别实现了[BBS04](http://crypto.stanford.edu/~dabo/abstracts/groupsigs.html)群签名方案和[LSAG](https://www.semanticscholar.org/paper/Linkable-Spontaneous-Anonymous-Group-Signature-for-Liu-Wei/3c63f7c90d79593fadfce16d54078ec1850bedc9)环签名方案。群/环签名，是一种能隐藏签名者身份的签名算法，在具有匿名性要求的场景中有着广泛的应用前景，例如投标、拍卖、投票等等。
 
