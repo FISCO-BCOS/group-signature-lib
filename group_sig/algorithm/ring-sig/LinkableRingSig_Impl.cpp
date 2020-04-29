@@ -55,7 +55,7 @@ int LinkableRingSigParam::init_param()
         dh.AccessGroupParameters().GenerateRandomWithKeySize(random, bit_len);
         if (!dh.GetGroupParameters().ValidateGroup(random, 3))
         {
-            LOG(ERROR) << "Faild to init ring group param";
+            LOG(ERROR) << "failed to init ring group param";
             return INIT_PARAM_INVALID_PRIME;
         }
         //LOG(DEBUG)<<"gen p";
@@ -71,7 +71,7 @@ int LinkableRingSigParam::init_param()
     catch (exception &err)
     {
         LOG(ERROR) << "init_param failed:" << err.what();
-        return SUCCESS;
+        return INIT_PARAM_INVALID_PRIME;
     }
     return SUCCESS;
 }
