@@ -59,6 +59,12 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DETH_RELEASE -DELPP_THREAD_SAFE -DBOOST_SPIRIT_THREADSAFE")
 
 	option(USE_LD_GOLD "Use GNU gold linker" ON)
+	option(ARCH_NATIVE "Use native cpu instruction set" OFF)
+	set(MARCH_TYPE "-march=x86-64 -mtune=generic -fvisibility=hidden -fvisibility-inlines-hidden")
+	if(ARCH_NATIVE)
+		message(STATUS "enable -march=native")
+		set(MARCH_TYPE "-march=native -mtune=native -fvisibility=hidden -fvisibility-inlines-hidden")
+	endif()
 	if (USE_LD_GOLD)
 		execute_process(COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
 		if ("${LD_VERSION}" MATCHES "GNU gold")
