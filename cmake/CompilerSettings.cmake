@@ -39,9 +39,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
     add_compile_options(-DBOOST_SPIRIT_THREADSAFE)
     add_compile_options(-DELPP_THREAD_SAFE)
 	#add_compile_options(-Werror)
-	
-	add_compile_options(-Wa,-march=generic64)
-	
+
 	if(STATIC_BUILD)
 		SET(BUILD_SHARED_LIBRARIES OFF)
         SET(CMAKE_EXE_LINKER_FLAGS "-static")
@@ -51,7 +49,7 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
 	add_compile_options(-Wno-unknown-pragmas)
 
 	add_compile_options(-fno-omit-frame-pointer)
-	
+
 	# Configuration-specific compiler settings.
     set(CMAKE_CXX_FLAGS_DEBUG          "-Og -g -DETH_DEBUG -DELPP_THREAD_SAFE -DBOOST_SPIRIT_THREADSAFE")
     set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG -DETH_RELEASE -DELPP_THREAD_SAFE -DBOOST_SPIRIT_THREADSAFE")
@@ -64,6 +62,8 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
 	if(ARCH_NATIVE)
 		message(STATUS "enable -march=native")
 		set(MARCH_TYPE "-march=native -mtune=native -fvisibility=hidden -fvisibility-inlines-hidden")
+	else()
+	    add_compile_options(-Wa,-march=generic64)
 	endif()
 	if (USE_LD_GOLD)
 		execute_process(COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
