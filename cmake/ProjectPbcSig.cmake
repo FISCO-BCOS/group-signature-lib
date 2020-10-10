@@ -1,5 +1,5 @@
 include(ExternalProject)
-set(PBC_SIG_PATCH cp ${CMAKE_SOURCE_DIR}/patch/pbc_sig.patch ${CMAKE_SOURCE_DIR}/deps/src && patch -f -p0 < ${CMAKE_SOURCE_DIR}/deps/src/pbc_sig.patch)
+set(PBC_SIG_PATCH cp ${CMAKE_SOURCE_DIR}/patch/pbc_sig.patch ${CMAKE_SOURCE_DIR}/deps/src && patch -f -p0 < ${CMAKE_SOURCE_DIR}/deps/src/pbc_sig.patch && cp ${CMAKE_CURRENT_LIST_DIR}/config.guess <SOURCE_DIR>)
 
 set(PBC_CONFIG_COMMAND ./configure CPPFLAGS=-I${CMAKE_SOURCE_DIR}/deps/include LDFLAGS=-L${CMAKE_SOURCE_DIR}/deps/lib --prefix=${CMAKE_SOURCE_DIR}/deps)
 
@@ -18,7 +18,7 @@ ExternalProject_Add(pbc_sig
     LOG_INSTALL 1
 )
 add_dependencies(pbc_sig pbc)
-
+ExternalProject_Get_Property(pbc_sig SOURCE_DIR)
 ExternalProject_Get_Property(pbc_sig INSTALL_DIR)
 add_library(Pbc_sig STATIC IMPORTED)
 set(PBC_SIG_INCLUDE_DIR ${INSTALL_DIR}/include)
