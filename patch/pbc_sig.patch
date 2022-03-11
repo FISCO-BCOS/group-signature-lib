@@ -1,10 +1,27 @@
---- sig/bbs.c	2010-10-20 08:55:34.000000000 +0800
-+++ sig/bbs2.c	2019-08-23 11:38:35.000000000 +0800
-@@ -1,6 +1,6 @@
- //see Boneh, Boyen and Shacham, "Short Group Signatures"
--#include <pbc/pbc_utils.h>
- #include "pbc_sig.h"
-+#include <pbc/pbc_utils.h>
- #include "pbc_hash.h"
+diff -urN pbc_sig/CMakeLists.txt pbc_sig-new/CMakeLists.txt
+--- pbc_sig/CMakeLists.txt	2022-03-11 10:44:54.000000000 +0800
++++ pbc_sig-new/CMakeLists.txt	2022-03-11 10:44:39.000000000 +0800
+@@ -33,12 +33,14 @@
+ sig/sig.c sig/hash.c sig/bbs.c
+ )
  
- void bbs_gen_sys_param(bbs_sys_param_ptr param, pairing_ptr pairing)
++if(test)
+ foreach(bin
+     test/bb test/bls test/ibs test/bbs
+ )
+     add_executable(${bin} ${bin}.c)
+     target_link_libraries(${bin} ${PBC_LIBRARY} pbc_sig ${GMP_LIBRARY})
+ endforeach(bin)
++endif(test)
+ 
+ if(debug)
+ set(optflags "-O0 -g")
+diff -urN pbc_sig/sig/bbs.c pbc_sig-new/sig/bbs.c
+--- pbc_sig/sig/bbs.c	2022-03-11 10:44:54.000000000 +0800
++++ pbc_sig-new/sig/bbs.c	2022-03-11 10:44:39.000000000 +0800
+@@ -1,4 +1,5 @@
+ //see Boneh, Boyen and Shacham, "Short Group Signatures"
++#include <stdint.h>
+ #include <pbc/pbc_utils.h>
+ #include "pbc_sig.h"
+ #include "pbc_hash.h"
