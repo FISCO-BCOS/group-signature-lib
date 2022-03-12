@@ -1,6 +1,14 @@
 include(ExternalProject)
 
-set(PBC_PBCSTRAP_COMMAND ./configure --prefix=${CMAKE_SOURCE_DIR}/deps)
+if(GMP_INCLUDE_DIR)
+    set(CPPFLAG_CMD "CPPFLAGS=-I${GMP_INCLUDE_DIR}")
+endif()
+
+if(GMP_LIB_DIR)
+    set(LDFLAGS_CMD "LDFLAGS=-L${GMP_LIB_DIR}")
+endif()
+
+set(PBC_PBCSTRAP_COMMAND ./configure ${CPPFLAG_CMD} ${LDFLAGS_CMD} --prefix=${CMAKE_SOURCE_DIR}/deps)
 
 ExternalProject_Add(pbc
     PREFIX ${CMAKE_SOURCE_DIR}/deps
