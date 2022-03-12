@@ -2,10 +2,12 @@ include(ExternalProject)
 
 if(GMP_INCLUDE_DIR)
     set(CPPFLAG_CMD "CPPFLAGS=-I${GMP_INCLUDE_DIR}")
+    message(STATUS "GMP_INCLUDE_DIR: ${GMP_INCLUDE_DIR}")
 endif()
 
 if(GMP_LIB_DIR)
     set(LDFLAGS_CMD "LDFLAGS=-L${GMP_LIB_DIR}")
+    message(STATUS "GMP_LIB_DIR: ${GMP_LIB_DIR}")
 endif()
 
 set(PBC_PBCSTRAP_COMMAND ./configure ${CPPFLAG_CMD} ${LDFLAGS_CMD} --prefix=${CMAKE_SOURCE_DIR}/deps)
@@ -31,6 +33,7 @@ ExternalProject_Get_Property(pbc INSTALL_DIR)
 add_library(Pbc STATIC IMPORTED)
 set(PBC_INCLUDE_DIR ${INSTALL_DIR}/include)
 set(PBC_LIBRARY ${INSTALL_DIR}/lib/libpbc.a)
+
 file(MAKE_DIRECTORY ${PBC_INCLUDE_DIR})  # Must exist.
 file(MAKE_DIRECTORY ${INSTALL_DIR}/lib)  # Must exist.
 set_property(TARGET Pbc PROPERTY IMPORTED_LOCATION ${PBC_LIBRARY})
