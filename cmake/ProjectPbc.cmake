@@ -15,7 +15,8 @@ set(PBC_PBCSTRAP_COMMAND ./configure ${CPPFLAG_CMD} ${LDFLAGS_CMD} --prefix=${CM
 ExternalProject_Add(pbc
     PREFIX ${CMAKE_SOURCE_DIR}/deps
     DOWNLOAD_NO_PROGRESS 1
-    URL https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz
+    URL https://osp-1257653870.cos.ap-guangzhou.myqcloud.com/FISCO-BCOS/deps/pbc/pbc-0.5.14.tar.gz
+        https://crypto.stanford.edu/pbc/files/pbc-0.5.14.tar.gz
     URL_HASH SHA256=772527404117587560080241cedaf441e5cac3269009cdde4c588a1dce4c23d2
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_CURRENT_LIST_DIR}/config.guess <SOURCE_DIR>
