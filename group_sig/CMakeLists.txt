@@ -28,7 +28,7 @@ add_library(group_sig STATIC ${SRC_LIST} ${HEADERS})
 
 find_package(jsoncpp CONFIG REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
-target_link_libraries(group_sig PUBLIC Pbc_sig Pbc Gmp cryptopp-static jsoncpp_lib_static)
+target_link_libraries(group_sig PUBLIC Pbc_sig Pbc Gmp cryptopp-static jsoncpp_static)
 
 INSTALL(TARGETS group_sig RUNTIME DESTINATION bin/ ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
 INSTALL(FILES ${ALGORITHM_BBS04_HEADERS} DESTINATION include/group_sig/algorithm/bbs04/) 
