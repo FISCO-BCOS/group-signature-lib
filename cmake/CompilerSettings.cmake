@@ -22,6 +22,8 @@ if(CCACHE_FOUND)
 	message("Using ccache")
 endif(CCACHE_FOUND)
 
+EXECUTE_PROCESS(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE)
+
 if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
 
 	# Use ISO C++11 standard language.
@@ -57,15 +59,14 @@ if (("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MA
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g -DETH_RELEASE -DELPP_THREAD_SAFE -DBOOST_SPIRIT_THREADSAFE")
 
 	option(USE_LD_GOLD "Use GNU gold linker" ON)
-	option(ARCH_NATIVE "Use native cpu instruction set" OFF)
-	set(MARCH_TYPE "-march=x86-64 -mtune=generic -fvisibility=hidden -fvisibility-inlines-hidden")
-	if(ARCH_NATIVE)
-	if(APPLE) 
+	set(MARCH_TYPE "-mtune=generic -fvisibility=hidden -fvisibility-inlines-hidden")
+	if ("${ARCHITECTURE}" MATCHES "aarch64" OR "${ARCHITECTURE}" MATCHES "arm64")
+        if(APPLE)
             set(MARCH_TYPE "-mtune=generic -fvisibility=hidden -fvisibility-inlines-hidden")
         else()
-            set(MARCH_TYPE "-march=native -mtune=native -mtune=generic -fvisibility=hidden -fvisibility-inlines-hidden")    
+            set(MARCH_TYPE "-march=native -mtune=native -fvisibility=hidden -fvisibility-inlines-hidden")
         endif()
-	endif(ARCH_NATIVE)
+    endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MARCH_TYPE}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MARCH_TYPE}")
 	if (USE_LD_GOLD)
